@@ -100,6 +100,4 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[3].keyWord", is("食品")))
                 .andExpect(status().isOk());
     }
-
-
 }

@@ -14,7 +14,7 @@ public class RsController {
     private List<RsEvent> rsList = initRsEventList();
 
     private List<RsEvent> initRsEventList() {
-        List<RsEvent> rsEvents = new ArrayList<>(); 
+        List<RsEvent> rsEvents = new ArrayList<>();
         rsEvents.add(new RsEvent("第一条事件", "无关键字"));
         rsEvents.add(new RsEvent("第二条事件", "无关键字"));
         rsEvents.add(new RsEvent("第三条事件", "无关键字"));
