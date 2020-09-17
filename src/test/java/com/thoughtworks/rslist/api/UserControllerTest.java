@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
@@ -46,6 +48,27 @@ public class UserControllerTest {
         assertEquals(1,all.size());
         assertEquals("xiaowang",all.get(0).getName());
         assertEquals(19,all.get(0).getAge());
+    }
+
+    @Test
+    @Order(2)
+    void should_get_one_user_by_id() throws Exception {
+//        User user = new User("xiaowang","female",19,"a@thoughtworks.com","18888888888");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String jsonString  = objectMapper.writeValueAsString(user);
+//        mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
+//        List<UserPO> all = userRepository.findAll();
+
+        mockMvc.perform(get("/user/1"))
+                .andExpect(jsonPath("$.id",is(1)))
+                .andExpect(jsonPath("$.name",is("xiaowang")))
+                .andExpect(jsonPath("$.gender",is("female")))
+                .andExpect(jsonPath("$.age",is(19)))
+                .andExpect(jsonPath("$.email",is("a@thoughtworks.com")))
+                .andExpect(jsonPath("$.phone",is("18888888888")))
+                .andExpect(jsonPath("$.voteNum",is(10)))
+                .andExpect(status().isOk());
     }
 
 
@@ -87,19 +110,19 @@ public class UserControllerTest {
     @Test
     @Order(4)
     public void  gender_should_null() throws Exception{
-        User user = new User("xiaowangssss"," ",19,"a@thoughtworks.com","18888888888");
+        User user = new User("xiaowang","",19,"a@thoughtworks.com","18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString  = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
 
     }
 
     @Test
     @Order(5)
     public void  email_should_suit_format() throws Exception{
-        User user = new User("xiaowangssss","female",19,"a@@thoughtworks.com","18888888888");
+        User user = new User("xiaowang","female",19,"a@@thoughtworks.com","18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString  = objectMapper.writeValueAsString(user);
 
@@ -111,7 +134,7 @@ public class UserControllerTest {
     @Test
     @Order(6)
     public void  age_should_less_than_18() throws Exception{
-        User user = new User("xiaowangssss","female",17,"a@thoughtworks.com","18888888888");
+        User user = new User("xiaowang","female",17,"a@thoughtworks.com","18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString  = objectMapper.writeValueAsString(user);
 
@@ -121,6 +144,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(7)
     public void  age_should_more_than_100() throws Exception{
         User user = new User("xiaowangssss","female",118,"a@thoughtworks.com","18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -132,6 +156,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(8)
     public void  phone_should_not_with_1() throws Exception{
         User user = new User("xiaowangssss","female",17,"a@thoughtworks.com","28888888888");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -140,5 +165,17 @@ public class UserControllerTest {
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
+    }
+
+
+    @Test
+    @Order(9)
+    void should_delete_one_user_by_id() throws Exception {
+        mockMvc.perform(delete("/user/2")).andExpect(status().isOk());
+
+        List<UserPO> all = userRepository.findAll();
+        assertEquals(1,all.size());
+        assertEquals("xiaowang",all.get(0).getName());
+        assertEquals(19,all.get(0).getAge());
     }
 }

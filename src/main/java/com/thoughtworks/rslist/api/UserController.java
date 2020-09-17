@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.User;
 
+import com.thoughtworks.rslist.exception.UserNotValidException;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.slf4j.Logger;
@@ -15,11 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 public class UserController {
-    private List<User> userList = new ArrayList<>();
+    private List<UserPO> userList = new ArrayList<>();
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -28,16 +30,6 @@ public class UserController {
 //        userList.add(user);
 //    }
 
-    @GetMapping("/user")
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    private ResponseEntity<Error> exceptionHandler(MethodArgumentNotValidException e) {
-        logger.error("Here is a invalid user");
-        return ResponseEntity.badRequest().body(new Error("invalid user"));
-    }
 
     @Autowired
     UserRepository userRepository;
@@ -53,4 +45,21 @@ public class UserController {
         userRepository.save(userPO);
     }
 
+    @GetMapping("/user/{index}")
+    public ResponseEntity getOneIndexUser(@Valid @PathVariable int index) {
+        Optional<UserPO> user = userRepository.findById(index);
+        return ResponseEntity.ok(user.get());
+    }
+
+    @DeleteMapping("/user/{index}")
+    public ResponseEntity should_delete_user_and_rsEvent(@Valid @PathVariable int index) {
+        userRepository.deleteById(index);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/list")
+    public ResponseEntity getUserList() {
+        userList = userRepository.findAll();
+        return ResponseEntity.ok(userList);
+    }
 }
