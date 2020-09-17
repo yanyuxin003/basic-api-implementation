@@ -3,6 +3,8 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.po.UserPO;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    UserRepository userRepository;
 
     @Test
     @Order(1)
@@ -31,19 +38,14 @@ public class UserControllerTest {
         User user = new User("xiaowang","female",19,"a@thoughtworks.com","18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString  = objectMapper.writeValueAsString(user);
-
         //然后向content传值 类型为MediaType.APPLICATION_JSON
         mockMvc.perform(post("/user").content(jsonString).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        mockMvc.perform(get("/user"))
-                .andExpect(jsonPath("$",hasSize(1)))
-                .andExpect(jsonPath("$[0].name",is("xiaowang")))
-                .andExpect(jsonPath("$[0].gender",is("female")))
-                .andExpect(jsonPath("$[0].age",is(19)))
-                .andExpect(jsonPath("$[0].email",is("a@thoughtworks.com")))
-                .andExpect(jsonPath("$[0].phone",is("18888888888")))
-                .andExpect(status().isOk());
+        //提取变量 userRepository.findAll();快捷键？
+        List<UserPO> all = userRepository.findAll();
+        assertEquals(1,all.size());
+        assertEquals("xiaowang",all.get(0).getName());
+        assertEquals(19,all.get(0).getAge());
     }
 
 

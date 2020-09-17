@@ -17,7 +17,7 @@ public class User {
     private String email;
     @Pattern(regexp = "1\\d{10}")
     private String phone;
-    private int voteName = 10;
+    private int voteNum = 10;
 
     public User(String name, String gender, int age, String email, String phone) {
         this.name = name;
@@ -70,11 +70,11 @@ public class User {
         this.phone = phone;
     }
 
-    public int getVoteName() {
-        return voteName;
+    public int getVoteNum() {
+        return voteNum;
     }
 
-    public void setVoteName(int voteName) {
-        this.voteName = voteName;
+    public void setVoteNum(int voteName) {
+        this.voteNum = voteName;
     }
 }
