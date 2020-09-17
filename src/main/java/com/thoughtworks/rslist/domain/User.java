@@ -1,8 +1,9 @@
-package domain;
+package com.thoughtworks.rslist.domain;
 
 import javax.validation.constraints.*;
 
 public class User {
+    //validation homework 3：设计约束条件
     @NotNull
     @Size(max=8)
     private String name;
