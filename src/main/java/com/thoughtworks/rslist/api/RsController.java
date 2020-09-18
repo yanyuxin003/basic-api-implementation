@@ -4,6 +4,10 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
+import com.thoughtworks.rslist.po.RsEventPO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +29,18 @@ public class RsController {
     // private List<String> rsList = Arrays.asList("第一条事件", "第二条事件", "第三条事件");
     private List<RsEvent> rsList = initRsEventList();
 
+    @Autowired
+    RsEventRepository rsEventRepository;
+    @Autowired
+    UserRepository userRepository;
+
     private List<RsEvent> initRsEventList() {
         User user = new User("xiaowang", "female", 19, "a@thoughtworks.com", "18888888888");
         userList.add(user);
         List<RsEvent> rsEvents = new ArrayList<>();
-        rsEvents.add(new RsEvent("第一条事件", "无关键字", user));
-        rsEvents.add(new RsEvent("第二条事件", "无关键字", user));
-        rsEvents.add(new RsEvent("第三条事件", "无关键字", user));
+        rsEvents.add(new RsEvent("第一条事件", "无关键字", 1));
+        rsEvents.add(new RsEvent("第二条事件", "无关键字", 1));
+        rsEvents.add(new RsEvent("第三条事件", "无关键字", 1));
         return rsEvents;
     }
 
@@ -60,24 +69,24 @@ public class RsController {
         return ResponseEntity.ok(rsList);
     }
 
-    @PostMapping("/rs/event")
-    //customize-response homework 2: 所有post请求都返回201,并且返回的头部带上index字段（值为创建的资源在列表中的位置：eg: 添加的热搜事件在列表中的index）
-    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) throws JsonProcessingException {
-        if (!userList.contains(rsEvent.getUser())) {
-            userList.add(rsEvent.getUser());
-            rsList.add(rsEvent);
-            System.out.println(userList);
-        } else {
-            RsEvent rsEvent1 = new RsEvent();
-            rsEvent1.setEventName(rsEvent.getEventName());
-            rsEvent1.setKeyWord(rsEvent.getKeyWord());
-            rsEvent1.setUser(userList.get(1));
-            rsList.add(rsEvent1);
-        }
-        //返回201，并且返回的头部带上index字段
-        String index = String.valueOf(this.rsList.indexOf(rsEvent));
-        return ResponseEntity.created(null).header("index", index).build();
-    }
+//    @PostMapping("/rs/event")
+//    //customize-response homework 2: 所有post请求都返回201,并且返回的头部带上index字段（值为创建的资源在列表中的位置：eg: 添加的热搜事件在列表中的index）
+//    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) throws JsonProcessingException {
+//        if (!userList.contains(rsEvent.getUser())) {
+//            userList.add(rsEvent.getUser());
+//            rsList.add(rsEvent);
+//            System.out.println(userList);
+//        } else {
+//            RsEvent rsEvent1 = new RsEvent();
+//            rsEvent1.setEventName(rsEvent.getEventName());
+//            rsEvent1.setKeyWord(rsEvent.getKeyWord());
+//            rsEvent1.setUser(userList.get(1));
+//            rsList.add(rsEvent1);
+//        }
+//        //返回201，并且返回的头部带上index字段
+//        String index = String.valueOf(this.rsList.indexOf(rsEvent));
+//        return ResponseEntity.created(null).header("index", index).build();
+//    }
 
 
     @PatchMapping("/rs/event/{index}")
@@ -91,8 +100,8 @@ public class RsController {
             event.setEventName(rsEvent.getEventName());
 
         }
-        if (rsEvent.getUser() != null) {
-            event.setUser(rsEvent.getUser());
+        if (rsEvent.getUserId() != 0) {
+            event.setUserId(rsEvent.getUserId());
         }
         return ResponseEntity.ok(null);
 
@@ -106,6 +115,35 @@ public class RsController {
         }
         rsList.remove(index - 1);
         return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/rs/event")
+    //customize-response homework 2: 所有post请求都返回201,并且返回的头部带上index字段（值为创建的资源在列表中的位置：eg: 添加的热搜事件在列表中的index）
+    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent)  {
+     if(userRepository.findById(rsEvent.getUserId()).isPresent()){
+         return ResponseEntity.badRequest().build();
+     }
+        RsEventPO rsEventPO = RsEventPO.builder().keyWord(rsEvent.getKeyWord()).eventName(rsEvent.getEventName())
+                .userId(rsEvent.getUserId()).build();
+        rsEventRepository.save(rsEventPO);
+        return ResponseEntity.created(null).build();
+    }
+
+    @PatchMapping("/rs/{rsEventId}")
+    public ResponseEntity should_update_rsEvent(@PathVariable int rsEventId, @RequestBody @Valid RsEvent rsEvent) {
+        RsEventPO rsEventPO = rsEventRepository.findById(rsEventId).get();
+        if (rsEventPO.getUserId() == rsEvent.getUserId()) {
+            if (rsEvent.getEventName() != null) {
+                rsEventPO.setEventName(rsEvent.getEventName());
+            }
+            if (rsEvent.getKeyWord() != null) {
+                rsEventPO.setKeyWord(rsEvent.getKeyWord());
+            }
+            rsEventRepository.save(rsEventPO);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
 

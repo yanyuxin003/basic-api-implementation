@@ -1,5 +1,8 @@
 package com.thoughtworks.rslist.domain;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.*;
 
 public class User {

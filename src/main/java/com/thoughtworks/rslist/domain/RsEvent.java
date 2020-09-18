@@ -9,14 +9,15 @@ public class RsEvent {
     private String eventName;
     @NotNull
     private String keyWord;
-    @Valid
     @NotNull
-    private User user;
+    private int userId;
+    private int voteNum = 10;
 
-    public RsEvent(String eventName, String keyWord, @Valid  User user) {
+    public RsEvent(@NotNull String eventName, @NotNull String keyWord, @NotNull int userId) {
         this.eventName = eventName;
         this.keyWord = keyWord;
-        this.user = user;
+        this.userId = userId;
+        this.voteNum = voteNum;
     }
 
     public RsEvent() {
@@ -38,11 +39,19 @@ public class RsEvent {
         this.keyWord = keyWord;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
+
+//    public int getVoteNum() {
+//        return voteNum;
+//    }
+//
+//    public void setVoteNum(int voteNum) {
+//        this.voteNum = voteNum;
+//    }
 }
