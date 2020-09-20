@@ -89,4 +89,6 @@ public class VotoControllerTest {
                 .andExpect(jsonPath("$[2].voteCount",is(8)));
 
     }
+
+   
 }

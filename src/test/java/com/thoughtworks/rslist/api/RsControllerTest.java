@@ -105,7 +105,7 @@ class RsControllerTest {
     public void should_not_add_new_rsEvent_when_user_not_exists() throws Exception {
         String jsonString = "{\"eventName\":\"猪肉涨价啦\",\"keyWord\":\"经济\",\"userId\": 100 }";
         mockMvc.perform(post("/rs/rsEvent").content(jsonString).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
 
     }
 
