@@ -1,7 +1,6 @@
 package com.thoughtworks.rslist.po;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.thoughtworks.rslist.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,12 +24,12 @@ public class RsEventPO {
 
     private String keyWord;
 
-    @ManyToOne
-    private UserPO userId;
+    private int voteNum;
+//    @ManyToOne
+//    private UserPO userId;
 
     @ManyToOne
     @JsonIgnore
     private UserPO userPO;
 
-    private int voteNum;
 }

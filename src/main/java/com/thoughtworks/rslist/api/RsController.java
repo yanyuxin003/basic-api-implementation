@@ -2,36 +2,34 @@ package com.thoughtworks.rslist.api;
 
 
 import com.thoughtworks.rslist.domain.RsEvent;
-import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.RsEventNotValidException;
 import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 
 @RestController
 public class RsController {
 
-    @Autowired
+    //@Autowired
     RsEventRepository rsEventRepository;
-    @Autowired
+    //@Autowired
     UserRepository userRepository;
+
+    public RsController(RsEventRepository rsEventRepository, UserRepository userRepository) {
+        this.rsEventRepository = rsEventRepository;
+        this.userRepository = userRepository;
+
+    }
 
     @GetMapping("/rs/{index}")
     public ResponseEntity getOneIndexEvent(@PathVariable int index) {
@@ -49,7 +47,7 @@ public class RsController {
 
 
     @GetMapping("/users")
-    public ResponseEntity get_all_user() {
+    public ResponseEntity getAllUser() {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
