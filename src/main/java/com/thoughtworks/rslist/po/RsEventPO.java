@@ -1,17 +1,15 @@
 package com.thoughtworks.rslist.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.thoughtworks.rslist.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
+import javax.persistence.*;
+
 
 @Entity
 @Data
@@ -27,5 +25,12 @@ public class RsEventPO {
 
     private String keyWord;
 
-    private int userId;
+    @ManyToOne
+    private UserPO userId;
+
+    @ManyToOne
+    @JsonIgnore
+    private UserPO userPO;
+
+    private int voteNum;
 }

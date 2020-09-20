@@ -1,11 +1,13 @@
 package com.thoughtworks.rslist.po;
 
+import com.thoughtworks.rslist.domain.RsEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -25,5 +27,6 @@ public class UserPO {
     private String phone;
     private int voteNum = 10;
 
-
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<RsEventPO> rsEventPOs;
 }

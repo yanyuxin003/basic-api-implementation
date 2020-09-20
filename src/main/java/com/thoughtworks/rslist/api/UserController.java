@@ -4,7 +4,9 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.User;
 
 import com.thoughtworks.rslist.exception.UserNotValidException;
+import com.thoughtworks.rslist.po.RsEventPO;
 import com.thoughtworks.rslist.po.UserPO;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,18 +23,18 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
+
+    @Autowired
+    RsEventRepository rsEventRepository;
+
     private List<UserPO> userList = new ArrayList<>();
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-//    @PostMapping("/user")
-//    public void addUser(@Valid @RequestBody User user) {
-//        userList.add(user);
-//    }
-
 
     @Autowired
     UserRepository userRepository;
+
     @PostMapping("/user")
     public void addUser(@Valid @RequestBody User user) {
         UserPO userPO = new UserPO();
@@ -45,17 +47,24 @@ public class UserController {
         userRepository.save(userPO);
     }
 
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity should_delete_user_and_rsEvent(@PathVariable int id) {
+        userRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+
     @GetMapping("/user/{index}")
     public ResponseEntity getOneIndexUser(@Valid @PathVariable int index) {
         Optional<UserPO> user = userRepository.findById(index);
-        return ResponseEntity.ok(user.get());
+        if (user.get() != null) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @DeleteMapping("/user/{index}")
-    public ResponseEntity should_delete_user_and_rsEvent(@Valid @PathVariable int index) {
-        userRepository.deleteById(index);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/user/list")
     public ResponseEntity getUserList() {

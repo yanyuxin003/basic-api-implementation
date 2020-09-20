@@ -5,13 +5,13 @@ import javax.validation.constraints.NotNull;
 
 public class RsEvent {
 
-    @NotNull
+//    @NotNull
     private String eventName;
-    @NotNull
+//    @NotNull
     private String keyWord;
     @NotNull
     private int userId;
-    private int voteNum = 10;
+    private int voteNum = 0;
 
     public RsEvent(@NotNull String eventName, @NotNull String keyWord, @NotNull int userId) {
         this.eventName = eventName;
@@ -47,11 +47,11 @@ public class RsEvent {
         this.userId = userId;
     }
 
-//    public int getVoteNum() {
-//        return voteNum;
-//    }
-//
-//    public void setVoteNum(int voteNum) {
-//        this.voteNum = voteNum;
-//    }
+    public int getVoteNum() {
+        return voteNum;
+    }
+
+    public void setVoteNum(int voteNum) {
+        this.voteNum = voteNum;
+    }
 }
