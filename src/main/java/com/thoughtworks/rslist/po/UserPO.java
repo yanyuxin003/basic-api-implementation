@@ -1,4 +1,4 @@
-package com.thoughtworks.rslist.domain;
+package com.thoughtworks.rslist.po;
 
 
 import lombok.AllArgsConstructor;
@@ -6,26 +6,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.persistence.*;
+import java.util.List;
 
+@Entity
+@Table(name = "user")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-
-    @NotNull
-    @Size(max=8)
+public class UserPO {
+    @Id
+    @GeneratedValue
+    private int id;
+//    @Column(name ="name")
     private String name;
-    @NotNull
     private String gender;
-    @NotNull
-    @Min(18)
-    @Max(100)
     private int age;
-    @Email
     private String email;
-    @Pattern(regexp = "1\\d{10}")
     private String phone;
     private int voteNum = 10;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "userPO")
+    private List<RsEventPO> rsEventPOS;
 }

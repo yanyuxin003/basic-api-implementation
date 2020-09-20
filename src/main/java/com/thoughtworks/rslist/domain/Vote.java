@@ -1,25 +1,19 @@
 package com.thoughtworks.rslist.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RsEvent {
-
-   // @NotNull
-    private String eventName;
-   // @NotNull
-    private String keyWord;
-    @NotNull
+public class Vote {
+    private int voteNum;
     private int userId;
-    private int voteNum = 0;
-
+    private LocalDateTime localDateTime;
+    private int rsEventId;
 }
